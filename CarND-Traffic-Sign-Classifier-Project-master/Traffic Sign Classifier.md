@@ -102,4 +102,11 @@ for i in range(10):
     axs[i].imshow(image)
     axs[i].set_title(y_train[index])
 ---
+# histogram of label frequency
+hist, bins = np.histogram(y_train, bins=n_classes)
+width = 0.7 * (bins[1] - bins[0])
+center = (bins[:-1] + bins[1:]) / 2
+plt.bar(center, hist, align='center', width=width)
+plt.show()
+
 
