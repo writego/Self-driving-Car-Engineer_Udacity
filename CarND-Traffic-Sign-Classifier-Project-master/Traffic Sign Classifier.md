@@ -131,3 +131,144 @@ Other pre-processing steps are optional. You can try different techniques to see
 
 Use the code cell (or multiple code cells, if necessary) to implement the first step of your project.
 
+```python
+# Convert to grayscale
+X_train_rgb = X_train
+X_train_gry = np.sum(X_train/3, axis=3, keepdims=True)
+
+X_test_rgb = X_test
+X_test_gry = np.sum(X_test/3, axis=3, keepdims=True)
+
+print('RGB shape:', X_train_rgb.shape)
+print('Grayscale shape:', X_train_gry.shape)
+
+X_train = X_train_gry
+X_test = X_test_gry
+
+
+# Visualize rgb vs grayscale
+n_rows = 8
+n_cols = 10
+offset = 9000
+fig, axs = plt.subplots(n_rows,n_cols, figsize=(18, 14))
+fig.subplots_adjust(hspace = .1, wspace=.001)
+axs = axs.ravel()
+for j in range(0,n_rows,2):
+    for i in range(n_cols):
+        index = i + j*n_cols
+        image = X_train_rgb[index + offset]
+        axs[index].axis('off')
+        axs[index].imshow(image)
+    for i in range(n_cols):
+        index = i + j*n_cols + n_cols 
+        image = X_train_gry[index + offset - n_cols].squeeze()
+        axs[index].axis('off')
+        axs[index].imshow(image, cmap='gray')
+        
+
+## Normalize the train and test datasets to (-1,1)
+
+X_train_normalized = (X_train - 128)/128 
+X_test_normalized = (X_test - 128)/128
+
+print(np.mean(X_train_normalized))
+print(np.mean(X_test_normalized))
+
+import cv2
+
+def random_translate(img):
+    rows,cols,_ = img.shape
+    
+    # allow translation up to px pixels in x and y directions
+    px = 2
+    dx,dy = np.random.randint(-px,px,2)
+
+    M = np.float32([[1,0,dx],[0,1,dy]])
+    dst = cv2.warpAffine(img,M,(cols,rows))
+    
+    dst = dst[:,:,np.newaxis]
+    
+    return dst
+
+test_img = X_train_normalized[22222]
+
+test_dst = random_translate(test_img)
+
+
+def random_scaling(img):   
+    rows,cols,_ = img.shape
+
+    # transform limits
+    px = np.random.randint(-2,2)
+
+    # ending locations
+    pts1 = np.float32([[px,px],[rows-px,px],[px,cols-px],[rows-px,cols-px]])
+
+    # starting locations (4 corners)
+    pts2 = np.float32([[0,0],[rows,0],[0,cols],[rows,cols]])
+
+    M = cv2.getPerspectiveTransform(pts1,pts2)
+
+    dst = cv2.warpPerspective(img,M,(rows,cols))
+    
+    dst = dst[:,:,np.newaxis]
+    
+    return dst
+
+test_dst = random_scaling(test_img)
+
+def random_warp(img):
+    
+    rows,cols,_ = img.shape
+
+    # random scaling coefficients
+    rndx = np.random.rand(3) - 0.5
+    rndx *= cols * 0.06   # this coefficient determines the degree of warping
+    rndy = np.random.rand(3) - 0.5
+    rndy *= rows * 0.06
+
+    # 3 starting points for transform, 1/4 way from edges
+    x1 = cols/4
+    x2 = 3*cols/4
+    y1 = rows/4
+    y2 = 3*rows/4
+
+    pts1 = np.float32([[y1,x1],
+                       [y2,x1],
+                       [y1,x2]])
+    pts2 = np.float32([[y1+rndy[0],x1+rndx[0]],
+                       [y2+rndy[1],x1+rndx[1]],
+                       [y1+rndy[2],x2+rndx[2]]])
+
+    M = cv2.getAffineTransform(pts1,pts2)
+
+    dst = cv2.warpAffine(img,M,(cols,rows))
+    
+    dst = dst[:,:,np.newaxis]
+    
+    return dst
+
+test_dst = random_warp(test_img)
+
+def random_brightness(img):
+    shifted = img + 1.0   # shift to (0,2) range
+    img_max_value = max(shifted.flatten())
+    max_coef = 2.0/img_max_value
+    min_coef = max_coef - 0.1
+    coef = np.random.uniform(min_coef, max_coef)
+    dst = shifted * coef - 1.0
+    return dst
+
+test_dst = random_brightness(test_img)
+
+
+# histogram of label frequency (once again, before data augmentation)
+hist, bins = np.histogram(y_train, bins=n_classes)
+width = 0.7 * (bins[1] - bins[0])
+center = (bins[:-1] + bins[1:]) / 2
+plt.bar(center, hist, align='center', width=width)
+plt.show()
+
+
+```
+
