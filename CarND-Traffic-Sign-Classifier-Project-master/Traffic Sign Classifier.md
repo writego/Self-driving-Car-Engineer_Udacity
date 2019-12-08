@@ -269,6 +269,157 @@ center = (bins[:-1] + bins[1:]) / 2
 plt.bar(center, hist, align='center', width=width)
 plt.show()
 
-
 ```
+
+## Original LeNet Model Architecture
+
+```python
+def LeNet(x):    
+    # Hyperparameters
+    mu = 0
+    sigma = 0.1
+    
+    # TODO: Layer 1: Convolutional. Input = 32x32x1. Output = 28x28x6.
+    W1 = tf.Variable(tf.truncated_normal(shape=(5, 5, 1, 6), mean = mu, stddev = sigma))
+    x = tf.nn.conv2d(x, W1, strides=[1, 1, 1, 1], padding='VALID')
+    b1 = tf.Variable(tf.zeros(6))
+    x = tf.nn.bias_add(x, b1)
+    print("layer 1 shape:",x.get_shape())
+
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+    
+    # TODO: Pooling. Input = 28x28x6. Output = 14x14x6.
+    x = tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+    
+    # TODO: Layer 2: Convolutional. Output = 10x10x16.
+    W2 = tf.Variable(tf.truncated_normal(shape=(5, 5, 6, 16), mean = mu, stddev = sigma))
+    x = tf.nn.conv2d(x, W2, strides=[1, 1, 1, 1], padding='VALID')
+    b2 = tf.Variable(tf.zeros(16))
+    x = tf.nn.bias_add(x, b2)
+                     
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+
+    # TODO: Pooling. Input = 10x10x16. Output = 5x5x16.
+    x = tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+
+    # TODO: Flatten. Input = 5x5x16. Output = 400.
+    x = flatten(x)
+    
+    # TODO: Layer 3: Fully Connected. Input = 400. Output = 120.
+    W3 = tf.Variable(tf.truncated_normal(shape=(400, 120), mean = mu, stddev = sigma))
+    b3 = tf.Variable(tf.zeros(120))    
+    x = tf.add(tf.matmul(x, W3), b3)
+    
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+    
+    # Dropout
+    x = tf.nn.dropout(x, keep_prob)
+
+    # TODO: Layer 4: Fully Connected. Input = 120. Output = 84.
+    W4 = tf.Variable(tf.truncated_normal(shape=(120, 84), mean = mu, stddev = sigma))
+    b4 = tf.Variable(tf.zeros(84)) 
+    x = tf.add(tf.matmul(x, W4), b4)
+    
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+    
+    # Dropout
+    x = tf.nn.dropout(x, keep_prob)
+
+    # TODO: Layer 5: Fully Connected. Input = 84. Output = 43.
+    W5 = tf.Variable(tf.truncated_normal(shape=(84, 43), mean = mu, stddev = sigma))
+    b5 = tf.Variable(tf.zeros(43)) 
+    logits = tf.add(tf.matmul(x, W5), b5)
+    
+    return logits
+```
+
+## Modified LeNet Model Architecture
+```python
+def LeNet2(x):    
+    # Hyperparameters
+    mu = 0
+    sigma = 0.1
+    
+    # TODO: Layer 1: Convolutional. Input = 32x32x1. Output = 28x28x6.
+    W1 = tf.Variable(tf.truncated_normal(shape=(5, 5, 1, 6), mean = mu, stddev = sigma))
+    x = tf.nn.conv2d(x, W1, strides=[1, 1, 1, 1], padding='VALID')
+    b1 = tf.Variable(tf.zeros(6))
+    x = tf.nn.bias_add(x, b1)
+    print("layer 1 shape:",x.get_shape())
+
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+    
+    # TODO: Pooling. Input = 28x28x6. Output = 14x14x6.
+    x = tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+    layer1 = x
+    
+    # TODO: Layer 2: Convolutional. Output = 10x10x16.
+    W2 = tf.Variable(tf.truncated_normal(shape=(5, 5, 6, 16), mean = mu, stddev = sigma))
+    x = tf.nn.conv2d(x, W2, strides=[1, 1, 1, 1], padding='VALID')
+    b2 = tf.Variable(tf.zeros(16))
+    x = tf.nn.bias_add(x, b2)
+                     
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+
+    # TODO: Pooling. Input = 10x10x16. Output = 5x5x16.
+    x = tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
+    layer2 = x
+    
+    # TODO: Layer 3: Convolutional. Output = 1x1x400.
+    W3 = tf.Variable(tf.truncated_normal(shape=(5, 5, 16, 400), mean = mu, stddev = sigma))
+    x = tf.nn.conv2d(x, W3, strides=[1, 1, 1, 1], padding='VALID')
+    b3 = tf.Variable(tf.zeros(400))
+    x = tf.nn.bias_add(x, b3)
+                     
+    # TODO: Activation.
+    x = tf.nn.relu(x)
+    layer3 = x
+
+    # TODO: Flatten. Input = 5x5x16. Output = 400.
+    layer2flat = flatten(layer2)
+    print("layer2flat shape:",layer2flat.get_shape())
+    
+    # Flatten x. Input = 1x1x400. Output = 400.
+    xflat = flatten(x)
+    print("xflat shape:",xflat.get_shape())
+    
+    # Concat layer2flat and x. Input = 400 + 400. Output = 800
+    x = tf.concat_v2([xflat, layer2flat], 1)
+    print("x shape:",x.get_shape())
+    
+    # Dropout
+    x = tf.nn.dropout(x, keep_prob)
+    
+    # TODO: Layer 4: Fully Connected. Input = 800. Output = 43.
+    W4 = tf.Variable(tf.truncated_normal(shape=(800, 43), mean = mu, stddev = sigma))
+    b4 = tf.Variable(tf.zeros(43))    
+    logits = tf.add(tf.matmul(x, W4), b4)
+    
+    # TODO: Activation.
+    #x = tf.nn.relu(x)
+
+    # TODO: Layer 5: Fully Connected. Input = 120. Output = 84.
+    #W5 = tf.Variable(tf.truncated_normal(shape=(120, 84), mean = mu, stddev = sigma))
+    #b5 = tf.Variable(tf.zeros(84)) 
+    #x = tf.add(tf.matmul(x, W5), b5)
+    
+    # TODO: Activation.
+    #x = tf.nn.relu(x)
+
+    # TODO: Layer 6: Fully Connected. Input = 84. Output = 43.
+    #W6 = tf.Variable(tf.truncated_normal(shape=(84, 43), mean = mu, stddev = sigma))
+    #b6 = tf.Variable(tf.zeros(43)) 
+    #logits = tf.add(tf.matmul(x, W6), b6)
+    
+    
+return logits
+ ```
+## Modified LeNet Model Architecture  
+
 
