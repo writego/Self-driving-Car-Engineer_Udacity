@@ -421,5 +421,134 @@ def LeNet2(x):
 return logits
  ```
 ## Modified LeNet Model Architecture  
+ ```python
+rate = 0.0009
+logits = LeNet2(x)
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits,labels= one_hot_y)
+loss_operation = tf.reduce_mean(cross_entropy)
+optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate = rate)
+training_operation = optimizer.minimize(loss_operation)
+correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(one_hot_y, 1))
+accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+saver = tf.compat.v1.train.Saver()
+def evaluate(X_data, y_data):
+    num_examples = len(X_data)
+    total_accuracy = 0
+    sess = tf.compat.v1.get_default_session()
+    for offset in range(0, num_examples, BATCH_SIZE):
+        batch_x, batch_y = X_data[offset:offset+BATCH_SIZE], y_data[offset:offset+BATCH_SIZE]
+        accuracy = sess.run(accuracy_operation, feed_dict={x: batch_x, y: batch_y, keep_prob: 1.0})
+        total_accuracy += (accuracy * len(batch_x))
+    return total_accuracy / num_examples
+
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.compat.v1.global_variables_initializer())
+#     sess.run(tf.compat.v1.initialize_all_variables())
+    num_examples = len(X_train)
+    
+    print("Training...")
+    print()
+    for i in range(EPOCHS):
+        X_train, y_train = shuffle(X_train, y_train)
+        for offset in range(0, num_examples, BATCH_SIZE):
+            end = offset + BATCH_SIZE
+            batch_x, batch_y = X_train[offset:end], y_train[offset:end]
+            sess.run(training_operation, feed_dict={x: batch_x, y: batch_y, keep_prob: 0.5})
+            
+        validation_accuracy = evaluate(X_validation, y_validation)
+        print("EPOCH {} ...".format(i+1))
+        print("Validation Accuracy = {:.3f}".format(validation_accuracy))
+        print()
+        
+    saver.save(sess, 'lenet')
+ ```
+## Step 3: Test a Model on New Images
+To give yourself more insight into how your model is working, download at least five pictures of German traffic signs from the web and use your model to predict the traffic sign type.
+
+You may find signnames.csv useful as it contains mappings from the class id (integer) to the actual sign name.
+
+## Load and Output the Images
+ ```
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+import tensorflow as tf
+import numpy as np
+import cv2
+ ```
+ 
+## Predict the Sign Type for Each Image
+ ```
+import glob
+import matplotlib.image as mpimg
+
+fig, axs = plt.subplots(2,4, figsize=(4, 2))
+fig.subplots_adjust(hspace = .2, wspace=.001)
+axs = axs.ravel()
+
+my_images = []
+
+for i, img in enumerate(glob.glob('./my-found-traffic-signs/*x.png')):
+    image = cv2.imread(img)
+    axs[i].axis('off')
+    axs[i].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    my_images.append(image)
+
+my_images = np.asarray(my_images)
+
+my_images_gry = np.sum(my_images/3, axis=3, keepdims=True)
+
+my_images_normalized = (my_images_gry - 128)/128 
+ ```
+ 
+## Analyze Performance
+ ```
+import tensorflow as tf
+my_labels = [3, 11, 1, 12, 38, 34, 18, 25]
+
+with tf.compat.v1.Session() as sess:
+#     sess.run(tf.initialize_all_variables()) 
+#     sess.run(global_variables_initializer())
+    saver3 = tf.compat.v1.train.import_meta_graph('./lenet.meta')
+    saver3.restore(sess, "./lenet")
+    my_accuracy = evaluate(my_images_normalized, my_labels)
+    print("Test Set Accuracy = {:.3f}".format(my_accuracy))
+ ```
+ ## Output Top 5 Softmax Probabilities For Each Image Found on the Web
+ ```
+softmax_logits = tf.nn.softmax(logits)
+top_k = tf.nn.top_k(softmax_logits, k=3)
 
 
+with tf.compat.v1.Session() as sess:
+    sess.run(tf.compat.v1.global_variables_initializer())
+    saver = tf.compat.v1.train.import_meta_graph('./lenet.meta')
+    saver.restore(sess, "./lenet")
+    my_softmax_logits = sess.run(softmax_logits, feed_dict={x: my_images_normalized, keep_prob: 1.0})
+    my_top_k = sess.run(top_k, feed_dict={x: my_images_normalized, keep_prob: 1.0})
+
+    
+    fig, axs = plt.subplots(len(my_images),4, figsize=(12, 14))
+    fig.subplots_adjust(hspace = .4, wspace=.2)
+    axs = axs.ravel()
+    
+    for i, image in enumerate(my_images):
+        axs[4*i].axis('off')
+        axs[4*i].imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        axs[4*i].set_title('input')
+        guess1 = my_top_k[1][i][0]
+        index1 = np.argwhere(y_validation == guess1)[0]
+        axs[4*i+1].axis('off')
+        axs[4*i+1].imshow(X_validation[index1].squeeze(), cmap='gray')
+        axs[4*i+1].set_title('top guess: {} ({:.0f}%)'.format(guess1, 100*my_top_k[0][i][0]))
+        guess2 = my_top_k[1][i][1]
+        index2 = np.argwhere(y_validation == guess2)[0]
+        axs[4*i+2].axis('off')
+        axs[4*i+2].imshow(X_validation[index2].squeeze(), cmap='gray')
+        axs[4*i+2].set_title('2nd guess: {} ({:.0f}%)'.format(guess2, 100*my_top_k[0][i][1]))
+        guess3 = my_top_k[1][i][2]
+        index3 = np.argwhere(y_validation == guess3)[0]
+        axs[4*i+3].axis('off')
+        axs[4*i+3].imshow(X_validation[index3].squeeze(), cmap='gray')
+        axs[4*i+3].set_title('3rd guess: {} ({:.0f}%)'.format(guess3, 100*my_top_k[0][i][2]))
+ ```
