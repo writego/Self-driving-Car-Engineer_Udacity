@@ -85,16 +85,21 @@ The [Matplotlib](http://matplotlib.org/) [examples](http://matplotlib.org/exampl
 
 **NOTE:** It's recommended you start with something simple first. If you wish to do more, come back to it after you've completed the rest of the sections.
 
-## Step 2: Design and Test a Model Architecture
+```python
+import matplotlib.pyplot as plt
+import random
+# Visualizations will be shown in the notebook.
+%matplotlib inline
 
-Design and implement a deep learning model that learns to recognize traffic signs. Train and test your model on the [German Traffic Sign Dataset](http://benchmark.ini.rub.de/?section=gtsrb&subsection=dataset).
-
-There are various aspects to consider when thinking about this problem:
-
-- Neural network architecture
-- Play around preprocessing techniques (normalization, rgb to grayscale, etc)
-- Number of examples per label (some have more than others).
-- Generate fake data.
-
-Here is an example of a [published baseline model on this problem](http://yann.lecun.com/exdb/publis/pdf/sermanet-ijcnn-11.pdf). It's not required to be familiar with the approach used in the paper but, it's good practice to try to read papers like these.
+# show image of 10 random data points
+fig, axs = plt.subplots(2,5, figsize=(15, 6))
+fig.subplots_adjust(hspace = .2, wspace=.001)
+axs = axs.ravel()
+for i in range(10):
+    index = random.randint(0, len(X_train))
+    image = X_train[index]
+    axs[i].axis('off')
+    axs[i].imshow(image)
+    axs[i].set_title(y_train[index])
+---
 
