@@ -101,12 +101,33 @@ for i in range(10):
     axs[i].axis('off')
     axs[i].imshow(image)
     axs[i].set_title(y_train[index])
----
+
 # histogram of label frequency
 hist, bins = np.histogram(y_train, bins=n_classes)
 width = 0.7 * (bins[1] - bins[0])
 center = (bins[:-1] + bins[1:]) / 2
 plt.bar(center, hist, align='center', width=width)
 plt.show()
+```
+## Step 2: Design and Test a Model Architecture
+Design and implement a deep learning model that learns to recognize traffic signs. Train and test your model on the German Traffic Sign Dataset.
 
+The LeNet-5 implementation shown in the classroom at the end of the CNN lesson is a solid starting point. You'll have to change the number of classes and possibly the preprocessing, but aside from that it's plug and play!
+
+With the LeNet-5 solution from the lecture, you should expect a validation set accuracy of about 0.89. To meet specifications, the validation set accuracy will need to be at least 0.93. It is possible to get an even higher accuracy, but 0.93 is the minimum for a successful project submission.
+
+There are various aspects to consider when thinking about this problem:
+
+Neural network architecture (is the network over or underfitting?)
+Play around preprocessing techniques (normalization, rgb to grayscale, etc)
+Number of examples per label (some have more than others).
+Generate fake data.
+Here is an example of a published baseline model on this problem. It's not required to be familiar with the approach used in the paper but, it's good practice to try to read papers like these.
+
+Pre-process the Data Set (normalization, grayscale, etc.)
+Minimally, the image data should be normalized so that the data has mean zero and equal variance. For image data, (pixel - 128)/ 128 is a quick way to approximately normalize the data and can be used in this project.
+
+Other pre-processing steps are optional. You can try different techniques to see if it improves performance.
+
+Use the code cell (or multiple code cells, if necessary) to implement the first step of your project.
 
