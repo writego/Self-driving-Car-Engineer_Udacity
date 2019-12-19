@@ -118,6 +118,10 @@ def modified_model():
 ```python
 model.add(Dropout(0.5))
 ```
+![image](Image/image2.png)
+![image](Image/image3.png)
+
+
 
 
 ### Data Set Summary & Exploration
