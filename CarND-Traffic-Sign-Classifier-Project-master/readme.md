@@ -92,29 +92,33 @@ def leNet_model():
 * Version 1: lr = 0.01, accuracy = 0.865
 * Version 2: lr = 0.001, accuracy = 0.913
 * Version 3: increasing the number of filters inside convolutional layer help network extract more features, accuracy = 0.926
-** model.add(Conv2D(30,(5,5),input_shape=(32,32,1),activation = 'relu')) changed to model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
-** model.add(Conv2D(15,(3,3),activation = 'relu')) changed to model.add(Conv2D(30,(3,3),activation = 'relu'))
-* Version 4: add two more layers in our nerual network. accuracy = 0.943
-** model.add(Conv2D(60,(5,5),activation = 'relu'))
-** model.add(Conv2D(30,(3,3),activation = 'relu'))
-###### Solve overfitting
-* Version 5: Add another dropout layer. 
-** model.add(Dropout(0.5)),accuracy = 0.961
-
-
 ```python
-
+def modified_model():
+    model = Sequential()
+    model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
+    model.add(MaxPooling2D(pool_size = (2,2)))
+    
+    model.add(Conv2D(30,(3,3),activation = 'relu'))
+    model.add(MaxPooling2D(pool_size = (2,2)))
+    
+    model.add(Flatten())
+    model.add(Dense(500,activation = 'relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes,activation = 'softmax'))
+    model.compile(Adam(lr = 0.001), loss = "categorical_crossentropy", metrics = ['accuracy'])
+    return model 
+```
+* Version 4: add two more layers in our nerual network. accuracy = 0.943
+```python
+    model.add(Conv2D(60,(5,5),activation = 'relu'))
+    model.add(Conv2D(30,(3,3),activation = 'relu'))
+```
+###### Solve overfitting
+* Version 5: Add another dropout layer. accuracy = 0.961
+```python
+model.add(Dropout(0.5))
 ```
 
-## Rubric Points
-### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
-
----
-### Writeup / README
-
-#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
-
-You're reading it! and here is a link to my [project code](https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
 
 ### Data Set Summary & Exploration
 
