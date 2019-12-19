@@ -92,14 +92,14 @@ def leNet_model():
 * Version 1: lr = 0.01, accuracy = 0.865
 * Version 2: lr = 0.001, accuracy = 0.913
 * Version 3: increasing the number of filters inside convolutional layer help network extract more features, accuracy = 0.926
-model.add(Conv2D(30,(5,5),input_shape=(32,32,1),activation = 'relu')) changed to model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
-model.add(Conv2D(15,(3,3),activation = 'relu')) changed to model.add(Conv2D(30,(3,3),activation = 'relu'))
-* V4: add two more layers in our nerual network. accuracy = 0.943
-model.add(Conv2D(60,(5,5),activation = 'relu'))
-model.add(Conv2D(30,(3,3),activation = 'relu'))
+** model.add(Conv2D(30,(5,5),input_shape=(32,32,1),activation = 'relu')) changed to model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
+** model.add(Conv2D(15,(3,3),activation = 'relu')) changed to model.add(Conv2D(30,(3,3),activation = 'relu'))
+* Version 4: add two more layers in our nerual network. accuracy = 0.943
+** model.add(Conv2D(60,(5,5),activation = 'relu'))
+** model.add(Conv2D(30,(3,3),activation = 'relu'))
 ###### Solve overfitting
-* V5: Add another dropout layer. 
-model.add(Dropout(0.5)),accuracy = 0.961
+* Version 5: Add another dropout layer. 
+** model.add(Dropout(0.5)),accuracy = 0.961
 
 
 ```python
