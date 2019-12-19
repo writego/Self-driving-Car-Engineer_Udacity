@@ -25,7 +25,7 @@ y_test shape: (12630,)
 ```
 ### Step 1: Dataset Summary & Exploration
 #### Using Pandas to provide a Basic Summary of the Data Set
-```
+```python
 output
 Number of training examples = 34799
 Number of validation examples = 4410
@@ -35,7 +35,36 @@ Number of classes = 43
 ```
 ### Using Matplotlib to show visualization of the dataset
 
-!![image](Image/image1.png)
+![image](Image/image1.png)
+
+### Step 2: Design and Test a Model Architecture
+#### Pre-process the Data Set
+```python
+# show image
+import cv2
+plt.imshow(X_train[1000])
+
+# convert image to grayscale
+def grayscale(img):
+    img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    return img
+
+img = grayscale(X_train[1000]) 
+
+# histogram equalization helps image into same bright
+def equalize(img):
+    img = cv2.equalizeHist(img)
+    return img
+img = equalize(img)
+
+# preprocessing data
+def preprocessing(img):
+    img = grayscale(img)
+    img = equalize(img)
+    img = img/255      #normalize
+    return img
+```
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
