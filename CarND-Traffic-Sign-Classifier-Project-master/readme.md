@@ -35,7 +35,7 @@ Number of classes = 43
 ```
 ### Using Matplotlib to show visualization of the dataset
 
-![alt text][image1]
+![Image][image1]
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
