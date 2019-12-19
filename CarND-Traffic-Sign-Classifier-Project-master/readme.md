@@ -1,32 +1,40 @@
-# **Traffic Sign Recognition** 
+# **Traffic Sign Recognition Classifier** 
 
-## Writeup
+## Overview
 
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
+#### In this project, you will use what you've learned about deep neural networks and convolutional neural networks to classify traffic signs. You will train a model so it can decode traffic signs from natural images by using the German Traffic Sign Dataset. After the model is trained, you will then test your model program on new images of traffic signs you've found. 
 ---
 
-**Build a Traffic Sign Recognition Project**
+## Build a Traffic Sign Recognition Project**
 
-The goals / steps of this project are the following:
-* Load the data set (see below for links to the project data set)
-* Explore, summarize and visualize the data set
-* Design, train and test a model architecture
-* Use the model to make predictions on new images
-* Analyze the softmax probabilities of the new images
-* Summarize the results with a written report
+### Step 0: Load the data
+#### load data "german-traffic-signs"
+```python
+!git clone https://bitbucket.org/jadslim/german-traffic-signs.git
+!ls german-traffic-signs
+```
+#### get data shape.
+```
+output
+X_train shape: (34799, 32, 32, 3)
+y_train shape: (34799,)
+X_valid shape: (34799, 32, 32, 3)
+y_valid shape: (34799,)
+X_test shape: (12630, 32, 32, 3)
+y_test shape: (12630,)
+```
+### Step 1: Dataset Summary & Exploration
+#### Using Pandas to provide a Basic Summary of the Data Set
+```
+output
+Number of training examples = 34799
+Number of validation examples = 4410
+Number of testing examples = 12630
+Image data shape = (32, 32, 3)
+Number of classes = 43
+```
+### Using Matplotlib to show visualization of the dataset
 
-
-[//]: # (Image References)
-
-[image1]: ./examples/visualization.jpg "Visualization"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
