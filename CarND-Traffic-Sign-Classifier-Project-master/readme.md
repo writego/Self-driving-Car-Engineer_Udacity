@@ -64,7 +64,7 @@ signs data set:
 
 Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
 
-![alt text][image1]
+![alt text](CarND-Traffic-Sign-Classifier-Project-master/Image/image1.png)
 
 ### Design and Test a Model Architecture
 
