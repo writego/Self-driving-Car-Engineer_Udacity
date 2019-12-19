@@ -64,7 +64,47 @@ def preprocessing(img):
     img = img/255      #normalize
     return img
 ```
+#### Train, Validate and Test the Model
+```python
+# Add the depth our data in the desired shape to be used as input in CNN
+X_train = X_train.reshape(34799, 32, 32,1)
+X_test = X_test.reshape(12630, 32, 32,1)
+X_valid = X_valid.reshape(4410, 32, 32,1)
 
+# Create leNet model
+def leNet_model():
+    model = Sequential()
+    model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
+    model.add(MaxPooling2D(pool_size = (2,2)))   
+    model.add(Conv2D(30,(3,3),activation = 'relu'))    
+    model.add(MaxPooling2D(pool_size = (2,2)))
+    model.add(Flatten())
+    model.add(Dense(500,activation = 'relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(num_classes,activation = 'softmax'))
+    model.compile(Adam(lr = 0.001), loss = "categorical_crossentropy", metrics = ['accuracy'])
+    return model
+```
+
+#### Modify the Model 
+##### Two issues: 1. Accuracy is not high. 2. Overfitting
+###### Improve accuracy
+**Version 1: lr = 0.01, accuracy = 0.865**
+**Version 2: lr = 0.001, accuracy = 0.913**
+**Version 3: increasing the number of filters inside convolutional layer help network extract more features, accuracy = 0.926
+model.add(Conv2D(30,(5,5),input_shape=(32,32,1),activation = 'relu')) changed to model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
+model.add(Conv2D(15,(3,3),activation = 'relu')) changed to model.add(Conv2D(30,(3,3),activation = 'relu'))**
+**V4: add two more layers in our nerual network. accuracy = 0.943**
+model.add(Conv2D(60,(5,5),activation = 'relu'))
+model.add(Conv2D(30,(3,3),activation = 'relu'))
+###### Solve overfitting
+**V5: Add another dropout layer. 
+model.add(Dropout(0.5)),accuracy = 0.961**
+
+
+```python
+
+```
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
