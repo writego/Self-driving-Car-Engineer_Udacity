@@ -87,19 +87,17 @@ def leNet_model():
 ```
 
 #### Modify the Model 
-##### Two issues: 1. Accuracy is not high. 2. Overfitting
-###### Improve accuracy
-* Version 1: lr = 0.01, accuracy = 0.865
-* Version 2: lr = 0.001, accuracy = 0.913
-* Version 3: increasing the number of filters inside convolutional layer help network extract more features, accuracy = 0.926
 ```python
-def modified_model():
+def modified2_model():
     model = Sequential()
     model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
+    model.add(Conv2D(60,(5,5),activation = 'relu'))
     model.add(MaxPooling2D(pool_size = (2,2)))
     
     model.add(Conv2D(30,(3,3),activation = 'relu'))
+    model.add(Conv2D(30,(3,3),activation = 'relu'))
     model.add(MaxPooling2D(pool_size = (2,2)))
+    model.add(Dropout(0.5))
     
     model.add(Flatten())
     model.add(Dense(500,activation = 'relu'))
@@ -107,17 +105,7 @@ def modified_model():
     model.add(Dense(num_classes,activation = 'softmax'))
     model.compile(Adam(lr = 0.001), loss = "categorical_crossentropy", metrics = ['accuracy'])
     return model 
-```
-* Version 4: add two more layers in our nerual network. accuracy = 0.943
-```python
-    model.add(Conv2D(60,(5,5),activation = 'relu'))
-    model.add(Conv2D(30,(3,3),activation = 'relu'))
-```
-###### Solve overfitting
-* Version 5: Add another dropout layer. accuracy = 0.961
-```python
-model.add(Dropout(0.5))
-```
+```    
 ![image](Image/image2.png)
 ![image](Image/image3.png)
 
@@ -150,7 +138,25 @@ My final model consisted of the following layers:
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+##### Two issues: 1. Accuracy is not high. 2. Overfitting
+###### Improve accuracy
+* Version 1: lr = 0.01, accuracy = 0.865
+* Version 2: lr = 0.001, accuracy = 0.913
+* Version 3: increasing the number of filters inside convolutional layer help network extract more features, accuracy = 0.926
+```python
+    model.add(Conv2D(60,(5,5),input_shape=(32,32,1),activation = 'relu'))
+    model.add(Conv2D(30,(3,3),activation = 'relu'))
+```
+* Version 4: add two more layers in our nerual network. accuracy = 0.943
+```python
+    model.add(Conv2D(60,(5,5),activation = 'relu'))
+    model.add(Conv2D(30,(3,3),activation = 'relu'))
+```
+###### Solve overfitting
+* Version 5: Add another dropout layer. accuracy = 0.961
+```python
+model.add(Dropout(0.5))
+```
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
