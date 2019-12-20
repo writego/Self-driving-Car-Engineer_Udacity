@@ -124,7 +124,7 @@ model.add(Dropout(0.5))
 
 ### Data Set Summary & Exploration
 
-#### 1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
+#### 1. Provide a basic summary of the data set. 
 
 * The size of training set = 34799
 * The size of the validation set = 4410
