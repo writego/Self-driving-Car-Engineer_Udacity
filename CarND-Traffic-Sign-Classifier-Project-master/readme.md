@@ -134,9 +134,7 @@ model.add(Dropout(0.5))
 
 #### 2. Include an exploratory visualization of the dataset.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
-
-![alt text](CarND-Traffic-Sign-Classifier-Project-master/Image/image1.png)
+![image](Image/image4.png)
 
 ### Design and Test a Model Architecture
 
