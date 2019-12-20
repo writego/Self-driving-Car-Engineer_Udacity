@@ -131,11 +131,11 @@ model.add(Dropout(0.5))
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
 
-* The size of training set is ?
-* The size of the validation set is ?
-* The size of test set is ?
-* The shape of a traffic sign image is ?
-* The number of unique classes/labels in the data set is ?
+* The size of training set = 
+* The size of the validation set = 
+* The size of test set = 
+* The shape of a traffic sign image = 
+* The number of unique classes/labels in the data set = 
 
 #### 2. Include an exploratory visualization of the dataset.
 
